@@ -1,0 +1,25 @@
+/* Print styles */
+@media print {
+    #vender-all-entry-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* #vender-all-entry-table th,
+      #vender-all-entry-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+      }
+      
+      #vender-all-entry-table th {
+        background-color: #343a40;
+        color: #fff;
+      }
+      
+      #vender-all-entry-table tbody tr:last-child td {
+        font-weight: bold;
+      } */
+  }
