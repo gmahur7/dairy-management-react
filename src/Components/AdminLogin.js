@@ -3,6 +3,7 @@ import Api_Url from '../env'
 import { Link, useNavigate } from 'react-router-dom'
 import { AdminState } from '../Context/ContextApi'
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
+import image from '../Images/Adminlogin.jpeg'
 
 const AdminLogin = () => {
     const { setToken } = AdminState()
@@ -47,54 +48,52 @@ const AdminLogin = () => {
         setLoginDiv(false)
     }
 
-    function reset() {
-        setId('')
-        setPassword('')
-        setError(false)
-        setMsg(false)
-    }
+    // function reset() {
+    //     setId('')
+    //     setPassword('')
+    //     setError(false)
+    //     setMsg(false)
+    // }
 
     return (
-        <div className='container-fluid bg-main vh-100 d-flex justify-content-center align-items-center'>
-            <div className='container'>
-                <div className='row'>
-                    {loginDiv &&
-                        <div className='d-flex flex-column flex-md-row justify-content-center align-items-center'>
-                            <div className='col-12 col-md-6 text-white text-center py-3'></div>
-                            <div className='col-12 col-md-6 text-white text-center py-3'>
-                                <div className='row glass-effect rounded' style={{padding: "20px"}}>
-                                    <div>
-                                        <h2 className='text-main'>Admin Login</h2>
-                                    </div>
-                                    <div className="input-group mb-3">
-                                        <span className="input-group-text">@</span>
-                                        <div className="form-floating">
-                                            <input type="text" className="form-control" id="floatingInputGroup1" placeholder="Username" value={Id} onChange={e => setId(e.target.value)} />
-                                            <label for="floatingInputGroup1">Username</label>
-                                        </div>
-                                    </div>
-                                    <div className="form-floating mb-3">
-                                        <input className="form-control relative" id="floatingPassword" placeholder="Password" type={inpType} value={Password} onChange={e => setPassword(e.target.value)} />
-                                        <label for="floatingPassword" style={{left:"10px"}}>Password</label>
-                                        <button type="button" className="btn btn-secondary password-toggle" onClick={() => inpType === 'text' ? setInpType('password') : setInpType('text')}>{inpType === 'password' ? <BiSolidShow className='text-sec' style={{fontSize:'25px'}} /> : <BiSolidHide className='text-sec' style={{fontSize:'25px'}} />}</button>
-
-                                    </div>
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <button onClick={login} type="button" className="btn btn-primary">Log-In</button>
-                                        <Link className='text-sec' onClick={toforgetpass} >Forget Password</Link>
-                                    </div>
-                                    {
-                                        msg && <p>{msg}</p>
-                                    }
-                                </div>
-                            </div>
+        <div className='container-fluid bg-main'>
+        <div className='container'>
+                {loginDiv &&
+                    <div className='d-flex flex-column flex-sm-row justify-content-center align-items-center gap-5'>
+                        <div className='w-50 w-sm-25 text-white text-center py-3'>
+                            <img src={image} alt="" className='w-100 w-sm-75' />
                         </div>
-                    }
-                    {
-                        !loginDiv &&
-                        <ForgetPassword />
-                    }
-                </div>
+                        <div className='w-80 w-md-50 text-white text-center py-3 px-5'>
+                                <div>
+                                    <h2 className='text-main'>Admin Login</h2>
+                                </div>
+                                <div className="input-group mb-3">
+                                    <span className="input-group-text">@</span>
+                                    <div className="form-floating">
+                                        <input type="text" className="form-control" id="floatingInputGroup1" placeholder="Username" value={Id} onChange={e => setId(e.target.value)} />
+                                        <label for="floatingInputGroup1">Username</label>
+                                    </div>
+                                </div>
+                                <div className="form-floating mb-3">
+                                    <input className="form-control position-relative" id="floatingPassword" placeholder="Password" type={inpType} value={Password} onChange={e => setPassword(e.target.value)} />
+                                    <label for="floatingPassword" style={{left:"10px"}}>Password</label>
+                                    <button type="button" className="btn btn-secondary password-toggle position-absolute top-50 right-5px translate-y-50" onClick={() => inpType === 'text' ? setInpType('password') : setInpType('text')}>{inpType === 'password' ? <BiSolidShow className='text-sec' style={{fontSize:'25px'}} /> : <BiSolidHide className='text-sec' style={{fontSize:'25px'}} />}</button>
+
+                                </div>
+                                <div className="d-flex justify-content-between align-items-center">
+                                    <button onClick={login} type="button" className="btn btn-primary">Log-In</button>
+                                    <Link className='text-sec' onClick={toforgetpass} >Forget Password</Link>
+                                </div>
+                                {
+                                    msg && <p>{msg}</p>
+                                }
+                        </div>
+                    </div>
+                }
+                {
+                    !loginDiv &&
+                    <ForgetPassword />
+                }
             </div>
         </div>
     )
