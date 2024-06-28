@@ -59,15 +59,15 @@ const AdminLogin = () => {
     return (
         <div className='container-fluid bg-main min-vh-100'>
             <Header/>
-            <div className='container '>
+            <div className='container py-5 border border-2 border-secondary rounded-5'>
                 {loginDiv &&
                     <div className="row justify-content-center align-items-center g-1 sm:px-5">
                         <div class="col-12 col-sm-6 ">
-                            <div className=' text-white text-center py-3'>
-                                <img src={image} alt="" className='w-75 w-sm-75' />
+                            <div className=' text-white text-center py-3 border-bottom sm:border-end border-2  border-secondary'>
+                                <img src={image} alt="" className='w-75 w-sm-75 w-md-50' />
                             </div>
                         </div>
-                        <div class="col-12 col-sm-6">
+                        <div class="col-12 col-sm-6 px-lg-5">
                             <div className=' text-white text-center py-3 px-3'>
                                 <div>
                                     <h2 className='text-main'>Admin Login</h2>
