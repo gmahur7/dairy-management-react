@@ -21,3 +21,7 @@
 .right-5px {
     right:5px;
 }
+
+.text-decoration-none {
+    text-decoration: none !important;
+}

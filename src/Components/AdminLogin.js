@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { AdminState } from '../Context/ContextApi'
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import image from '../Images/Adminlogin.jpeg'
+import Header from './Header';
 
 const AdminLogin = () => {
     const { setToken } = AdminState()
@@ -56,14 +57,18 @@ const AdminLogin = () => {
     // }
 
     return (
-        <div className='container-fluid bg-main'>
-        <div className='container'>
+        <div className='container-fluid bg-main min-vh-100'>
+            <Header/>
+            <div className='container '>
                 {loginDiv &&
-                    <div className='d-flex flex-column flex-sm-row justify-content-center align-items-center gap-5'>
-                        <div className='w-50 w-sm-25 text-white text-center py-3'>
-                            <img src={image} alt="" className='w-100 w-sm-75' />
+                    <div className="row justify-content-center align-items-center g-1 sm:px-5">
+                        <div class="col-12 col-sm-6 ">
+                            <div className=' text-white text-center py-3'>
+                                <img src={image} alt="" className='w-75 w-sm-75' />
+                            </div>
                         </div>
-                        <div className='w-80 w-md-50 text-white text-center py-3 px-5'>
+                        <div class="col-12 col-sm-6">
+                            <div className=' text-white text-center py-3 px-3'>
                                 <div>
                                     <h2 className='text-main'>Admin Login</h2>
                                 </div>
@@ -76,8 +81,8 @@ const AdminLogin = () => {
                                 </div>
                                 <div className="form-floating mb-3">
                                     <input className="form-control position-relative" id="floatingPassword" placeholder="Password" type={inpType} value={Password} onChange={e => setPassword(e.target.value)} />
-                                    <label for="floatingPassword" style={{left:"10px"}}>Password</label>
-                                    <button type="button" className="btn btn-secondary password-toggle position-absolute top-50 right-5px translate-y-50" onClick={() => inpType === 'text' ? setInpType('password') : setInpType('text')}>{inpType === 'password' ? <BiSolidShow className='text-sec' style={{fontSize:'25px'}} /> : <BiSolidHide className='text-sec' style={{fontSize:'25px'}} />}</button>
+                                    <label for="floatingPassword" style={{ left: "10px" }}>Password</label>
+                                    <button type="button" className="btn btn-secondary password-toggle position-absolute top-50 right-5px translate-y-50" onClick={() => inpType === 'text' ? setInpType('password') : setInpType('text')}>{inpType === 'password' ? <BiSolidShow className='text-sec' style={{ fontSize: '25px' }} /> : <BiSolidHide className='text-sec' style={{ fontSize: '25px' }} />}</button>
 
                                 </div>
                                 <div className="d-flex justify-content-between align-items-center">
@@ -87,8 +92,10 @@ const AdminLogin = () => {
                                 {
                                     msg && <p>{msg}</p>
                                 }
+                            </div>
                         </div>
                     </div>
+
                 }
                 {
                     !loginDiv &&
@@ -98,6 +105,8 @@ const AdminLogin = () => {
         </div>
     )
 }
+
+
 
 const ForgetPassword = () => {
     const navigate = useNavigate()
