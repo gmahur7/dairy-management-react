@@ -19,7 +19,7 @@ const AdminLogin = () => {
     const login = async () => {
         if (!Id || !Password) {
             setError(true)
-            return
+            return;
         }
         else {
             try {
@@ -57,13 +57,14 @@ const AdminLogin = () => {
     // }
 
     return (
-        <div className='container-fluid bg-main min-vh-100'>
-            <Header/>
+        <>
+        <Header className="z-index-5"/>
+        <div className='container-fluid bg-main min-vh-75 pt-5 pt-sm-0'>
             <div className='container py-5 border border-2 border-secondary rounded-5'>
                 {loginDiv &&
                     <div className="row justify-content-center align-items-center g-1 sm:px-5">
                         <div class="col-12 col-sm-6 ">
-                            <div className=' text-white text-center py-3 border-bottom sm:border-end border-2  border-secondary'>
+                            <div className=' text-white text-center py-3 border-side border-2  border-secondary'>
                                 <img src={image} alt="" className='w-75 w-sm-75 w-md-50' />
                             </div>
                         </div>
@@ -72,14 +73,14 @@ const AdminLogin = () => {
                                 <div>
                                     <h2 className='text-main'>Admin Login</h2>
                                 </div>
-                                <div className="input-group mb-3">
+                                <div className="input-group mb-3 z-index-1">
                                     <span className="input-group-text">@</span>
                                     <div className="form-floating">
                                         <input type="text" className="form-control" id="floatingInputGroup1" placeholder="Username" value={Id} onChange={e => setId(e.target.value)} />
                                         <label for="floatingInputGroup1">Username</label>
                                     </div>
                                 </div>
-                                <div className="form-floating mb-3">
+                                <div className="form-floating mb-3" style={{zIndex:1}}>
                                     <input className="form-control position-relative" id="floatingPassword" placeholder="Password" type={inpType} value={Password} onChange={e => setPassword(e.target.value)} />
                                     <label for="floatingPassword" style={{ left: "10px" }}>Password</label>
                                     <button type="button" className="btn btn-secondary password-toggle position-absolute top-50 right-5px translate-y-50" onClick={() => inpType === 'text' ? setInpType('password') : setInpType('text')}>{inpType === 'password' ? <BiSolidShow className='text-sec' style={{ fontSize: '25px' }} /> : <BiSolidHide className='text-sec' style={{ fontSize: '25px' }} />}</button>
@@ -103,6 +104,7 @@ const AdminLogin = () => {
                 }
             </div>
         </div>
+        </>
     )
 }
 

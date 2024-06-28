@@ -18,26 +18,26 @@ import DetailsChart from './Components/DetailsChart';
 
 function App() {
 
-  document.title="Dairy Management App"
+  document.title = "Dairy Management App"
 
   return (
       <Routes>
-        <Route path='/adminlogin' element={<AdminLogin/>} />
+        <Route path='/adminlogin' element={<AdminLogin />} />
         {/* <Route path='/forgetpassword' element={<ForgetPassword/>} /> */}
         {/* <Route element={<Protected />}> */}
-          <Route path='/vender/payments/:id' element={<VenderPaymentTable/>} />
-          <Route path='/vender' element={<VenderMain/>} />
-          <Route path='/vender/:id' element={<VenderDetail/>} />
-          <Route path='/vender/all/:id' element={<VenderAllEntries/>} />
-          <Route path='/' element={<MilkEntry />} />
-          <Route path='/payment/:id' element={<Payment />} />
-          <Route path='/vendertable' element={<VenderTable />} />
-          <Route path='/newvender' element={<NewVender />} />
-          <Route path="/details" element={<DetailsChart/>} />
-          <Route path='/perdaydetail' element={<OneDayMilkDetail />} />
-          <Route path='/updatedetail/:id' element={<SetRateFat />} />
-          <Route path='/lastdaysdetailchart' element={<LastDaysDetailChart />} />
-          <Route path='/lastdayspervenderdata' element={<LastDaysPerVenderData />} />
+        <Route path='/vender/payments/:id' element={<VenderPaymentTable />} />
+        <Route path='/vendor' element={<VenderMain />} />
+        <Route path='/vender/:id' element={<VenderDetail />} />
+        <Route path='/vender/all/:id' element={<VenderAllEntries />} />
+        <Route path='/' element={<MilkEntry />} />
+        <Route path='/payment/:id' element={<Payment />} />
+        <Route path='/vendertable' element={<VenderTable />} />
+        <Route path='/newvender' element={<NewVender />} />
+        <Route path="/details" element={<DetailsChart />} />
+        <Route path='/perdaydetail' element={<OneDayMilkDetail />} />
+        <Route path='/updatedetail/:id' element={<SetRateFat />} />
+        <Route path='/lastdaysdetailchart' element={<LastDaysDetailChart />} />
+        <Route path='/lastdayspervenderdata' element={<LastDaysPerVenderData />} />
         {/* </Route> */}
       </Routes>
   );
