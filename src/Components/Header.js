@@ -12,20 +12,20 @@ const Header = () => {
 
     return (
         <>
-            <header className='container-fluid  py-3 py-sm-5 bg-main'>
-                <div className='row justify-content-between align-items-center px-0 px-md-5'>
+            <header className='container-fluid  py-3 py-sm-3 bg-dark '>
+                <div className='row justify-content-between align-items-center px-0 px-md-5 gx-4'>
                     <div className='col-6'>
-                        <h4 className=' text-main'>Dairy Management
-                            <span className='fs-3 text-white'><LuMilk /></span>
+                        <h4 className='text-info'>Dairy Management
+                            <span className='fs-3 text-main'><LuMilk/></span>
                         </h4>
                     </div>
-                    <div className='col-6 d-none d-sm-block'>
-                        <ul className='d-flex justify-content-end gap-2 gap-sm-3 gap-md-4 list-unstyled fs-10'>
-                            <li className='text-decoration-none' style={{ textDecoration: 'none' }}><Link to='/#'>Home</Link></li>
-                            <li className='text-decoration-none'><Link to='/vendor'>Vendor</Link></li>
-                            <li className='text-decoration-none'><Link to='/details'>Details</Link></li>
-                            <li className='text-decoration-none'><Link to='/#'>About</Link></li>
-                            <li className='text-decoration-none'><Link to='/#'>Logout</Link></li>
+                    <div className='col-6 d-none d-sm-block pt-12'>
+                        <ul className='d-flex justify-content-end align-items-center gap-2 gap-sm-3 gap-md-4 list-unstyled fs-10'>
+                            <li><Link  className='text-decoration-none text-light' to='/#'>Home</Link></li>
+                            <li><Link  className='text-decoration-none text-light ' to='/vendor'>Vendor</Link></li>
+                            <li><Link className='text-decoration-none text-light' to='/details'>Details</Link></li>
+                            <li><Link className='text-decoration-none text-light' to='/#'>About</Link></li>
+                            <li><Link  className='text-decoration-none text-light' to='/#'>Logout</Link></li>
                         </ul>
                     </div>
                     <div className='col-6  d-sm-none'>
@@ -65,11 +65,11 @@ export const MobileNav = ({close,value}) => {
                 <div className='row justify-content-center align-items-center flex-column'>
                     <div className='col-6 text-center'>
                         <ul className='d-flex justify-content-end flex-column gap-3 list-unstyled fs-10'>
-                            <li className='text-decoration-none' style={{ textDecoration: 'none' }}><Link to='/#'>Home</Link></li>
-                            <li className='text-decoration-none'><Link to='/vendor'>Vendor</Link></li>
-                            <li className='text-decoration-none'><Link to='/details'>Details</Link></li>
-                            <li className='text-decoration-none'><Link to='/#'>About</Link></li>
-                            <li className='text-decoration-none'><Link to='/#'>Logout</Link></li>
+                        <li><Link  className='text-decoration-none' to='/#'>Home</Link></li>
+                            <li><Link  className='text-decoration-none' to='/vendor'>Vendor</Link></li>
+                            <li><Link className='text-decoration-none' to='/details'>Details</Link></li>
+                            <li><Link className='text-decoration-none' to='/#'>About</Link></li>
+                            <li><Link  className='text-decoration-none' to='/#'>Logout</Link></li>
                         </ul>
                     </div>
                 </div>
