@@ -1,24 +1,38 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Api_Url from '../env'
 import { Link, useNavigate } from 'react-router-dom'
 import { AdminState } from '../Context/ContextApi'
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import image from '../Images/Adminlogin.jpeg'
 import Header from './Header';
+import { ToastContainer, toast } from 'react-toastify';
+
+const toastErrorObj = {
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+}
 
 const AdminLogin = () => {
     const { setToken } = AdminState()
     const navigate = useNavigate()
     const [Id, setId] = useState('')
-    const [loginDiv, setLoginDiv] = useState(false)
+    const [loginDiv, setLoginDiv] = useState(true)
     const [Password, setPassword] = useState('')
     const [inpType, setInpType] = useState('password')
-    const [error, setError] = useState(false)
     const [msg, setMsg] = useState(false)
 
     const login = async () => {
-        if (!Id || !Password) {
-            setError(true)
+        if (!Id) {
+            toast.error('Please Enter Your Id', toastErrorObj);
+            return;
+        }
+        if (!Password) {
+            toast.error('Please Enter Your Password', toastErrorObj);
             return;
         }
         else {
@@ -40,6 +54,15 @@ const AdminLogin = () => {
                     throw new Error(auth.msg)
                 }
             } catch (error) {
+                toast.error(error.message, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                })
                 setMsg(error.message)
             }
         }
@@ -48,6 +71,12 @@ const AdminLogin = () => {
     function toforgetpass() {
         setLoginDiv(false)
     }
+
+    useEffect(() => {
+        if (msg) {
+            setMsg(false)
+        }
+    }, [Id, Password])
 
     // function reset() {
     //     setId('')
@@ -92,7 +121,7 @@ const AdminLogin = () => {
                                             <Link className='text-main' onClick={toforgetpass} >Forget Password</Link>
                                         </div>
                                         {
-                                            msg && <p>{msg}</p>
+                                            msg && <p className='fs-5 text-danger'>{msg}</p>
                                         }
                                     </div>
                                 </div>
@@ -106,6 +135,7 @@ const AdminLogin = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </Fragment>
     )
 }
@@ -277,9 +307,9 @@ const ForgetPassword = () => {
                 <div class="col-12 col-sm-6 px-lg-5">
                     <div className='text-white text-center py-3 px-3'>
                         <div>
-                            {emailDiv&&<h2 className='text-info'>Forget Password</h2>}
-                            {otpDiv&&<h2 className='text-info'>Verify OTP</h2>}
-                            {passDiv&&<h2 className='text-info'>Change Passowrd</h2>}
+                            {emailDiv && <h2 className='text-info'>Forget Password</h2>}
+                            {otpDiv && <h2 className='text-info'>Verify OTP</h2>}
+                            {passDiv && <h2 className='text-info'>Change Passowrd</h2>}
                         </div>
                         {emailDiv &&
                             <div>
@@ -304,9 +334,9 @@ const ForgetPassword = () => {
                                     <button onClick={() => navigate(0)} type="button" className="btn btn-secondary">Back</button>
                                 </div>
                                 <div className='pt-3'>
-                                {
-                                    msg && <p className='text-danger'>{msg}</p>
-                                }
+                                    {
+                                        msg && <p className='text-danger'>{msg}</p>
+                                    }
                                 </div>
                             </div>
                         }
@@ -323,12 +353,12 @@ const ForgetPassword = () => {
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between justify-content-sm-around align-items-center">
-                                        <button onClick={verifyOTP} type="button" className="btn btn-primary btn-main">Verify</button>
-                                        <button onClick={() => navigate(0)} type="button" className="btn btn-secondary">Back</button>
-                                    </div>
-                                    <div className='pt-3'>
-                                        {msg2 && <p className='text-danger'>OTP Verification Failed</p>}
-                                    </div>
+                                    <button onClick={verifyOTP} type="button" className="btn btn-primary btn-main">Verify</button>
+                                    <button onClick={() => navigate(0)} type="button" className="btn btn-secondary">Back</button>
+                                </div>
+                                <div className='pt-3'>
+                                    {msg2 && <p className='text-danger'>OTP Verification Failed</p>}
+                                </div>
                             </div>
                         }
                         {

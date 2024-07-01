@@ -1,4 +1,5 @@
 import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
 import { Routes, Route } from 'react-router-dom'
 import NewVender from './Components/NewVender';
 import VenderTable from './Components/VenderTable';
