@@ -66,8 +66,8 @@
 }
 
 .container-fluid.bg-main {
-  padding-top: 60px; 
-  min-height: calc(100vh - 84px) !important;
+  padding: 60px 0 20px; 
+  min-height: calc(100vh - 80px) !important;
 }
 
 @media (max-width: 575.98px) {

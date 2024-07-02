@@ -306,7 +306,7 @@ const MilkEntry = () => {
                                         </div>
                                         <div className="d-flex justify-content-between align-items-center">
                                             <button onClick={submit} type="button" className="btn btn-primary btn-main">Submit</button>
-                                            <button onClick={reset} type="button" className="btn btn-danger">Reset</button>
+                                            <button onClick={reset} type="button" className="btn btn-secondary">Reset</button>
                                         </div>
                                     </div>
                                 </div>
