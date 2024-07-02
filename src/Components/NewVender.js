@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Api_Url from '../env'
 import { AdminState } from '../Context/ContextApi'
-import NavBar from './NavBar'
+import Header from './Header'
+import { ToastContainer, toast } from 'react-toastify'
 
 const NewVender = () => {
     const { token } = AdminState()
@@ -13,12 +14,12 @@ const NewVender = () => {
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
     const [error, setError] = useState(false)
-    const [searchError, setSearchError] = useState(false)
 
-
-    const submit = async () => {
+    const submit = async (e) => {
+        e.preventDefault();
         if (!Name || !Fat || !Rate) {
             setError(true)
+            toast.error("Please Fill All The Fields")
         }
         else {
             try {
@@ -30,10 +31,9 @@ const NewVender = () => {
                         Authorization: `Bearer ${token}`
                     }
                 })
-                result=await result.json()
+                result = await result.json()
                 if (result.msg === 'Successfull') {
-                    setSuccess(true)
-                    setFail(false)
+                    toast.success("Vendor Added Successfully.")
                     setTimeout(() => {
                         reset()
                         navigate(0)
@@ -44,8 +44,7 @@ const NewVender = () => {
                 }
             }
             catch (err) {
-                setSuccess(false)
-                setFail(true)
+                toast.error(err.message)
             }
         }
     }
@@ -59,39 +58,47 @@ const NewVender = () => {
     }
 
     return (
-        <>
-            <NavBar />
-            <div id="new-vender">
-                <h2>Enter Vender Details To Add : </h2>
-                <div id="new-vender-form">
-                    <div>
-                        <input value={Name} onChange={(e) => { setName(e.target.value) }} type='text' />
-                        <label>Enter Name : </label>
-                        {error && !Name && <p className='error'>Please Enter Name </p>}
+        <Fragment>
+            <Header />
+            <div className='container-fluid bg-main text-white'>
+                <div className='container'>
+                    <div className='row justify-content-center'>
+                        <div className='col-md-6 col-sm-12 col-xs-12'>
+                            <div className='card bg-dark mt-4 p-3'>
+                                <div className='card-header fs-3 bg-main text-info '>Add Vender</div>
+                                <div className='card-body'>
+                                    <form onSubmit={submit}>
+                                        <div className='form-group mb-3'>
+                                            <label htmlFor='name' className='text-white'>Name</label>
+                                            <input type='text' className='form-control' id='name' placeholder='Enter Name
+                                            ' value={Name} onChange={e => setName(e.target.value)} />
+                                            <small className='text-danger'>{error.name}</small>
+                                        </div>
+                                        <div className='form-group mb-3'>
+                                            <label htmlFor='fat' className='text-white'>Fat Pass</label>
+                                            <input type='number' className='form-control' id='fat' placeholder='Enter Fat Pass
+                                            ' value={Fat} onChange={e => setFat(e.target.value)} />
+                                            <small className='text-danger'>{error.name}</small>
+                                        </div>
+                                        <div className='form-group mb-4'>
+                                            <label htmlFor='name' className='text-white'>Rate</label>
+                                            <input type='number' className='form-control' id='rate' placeholder='Enter Rate
+                                            ' value={Rate} onChange={e => setRate(e.target.value)} />
+                                            <small className='text-danger'>{error.name}</small>
+                                        </div>
+                                        <div className='d-flex gap-4'>
+                                            <button type='submit' className='btn btn-primary'>Submit</button>
+                                            <button type='reset' className='btn btn-danger' onClick={reset}>Reset</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <input value={Rate} onChange={(e) => setRate(e.target.value)} type='number' />
-                        <label>Enter Rate : </label>
-                        {error && !Rate && <p className='error'>Please Enter Rate </p>}
-                    </div>
-                    <div>
-                        <input value={Fat} onChange={(e) => setFat(e.target.value)} type='number' />
-                        <label>Enter Fat : </label>
-                        {error && !Fat && <p className='error'>Please Enter Fat </p>}
-                    </div>
-
-                </div>
-                <div id="new-vender-btns">
-                    <button onClick={submit}>Submit</button>
-                    <button onClick={reset}>Reset</button>
-                </div>
-                <div id="new-vender-fetch">
-                    {success && <p>Submit Successfully</p>}
-                    {fail && <p>Submit Failed</p>}
-
                 </div>
             </div>
-        </>
+            <ToastContainer/>
+        </Fragment>
     )
 }
 
