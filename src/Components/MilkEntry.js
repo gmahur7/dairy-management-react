@@ -2,8 +2,11 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Api_Url from '../env'
 import { AdminState } from '../Context/ContextApi'
-import NavBar from './NavBar'
 import Header from './Header'
+import { ToastContainer, toast } from 'react-toastify';
+import { Button } from 'react-bootstrap'
+import { MdDeleteForever } from 'react-icons/md'
+import { RiDeleteBin6Fill } from 'react-icons/ri'
 
 const MilkEntry = () => {
     const token = AdminState()?.token;
@@ -86,6 +89,7 @@ const MilkEntry = () => {
 
     const submit = async () => {
         if (!Vender_id || !DateDetail || !Quantity || !Fat || !Shift || !NetAmount) {
+            toast.error("Please All The Fields First.")
             setError(true)
         }
         else {
@@ -100,18 +104,14 @@ const MilkEntry = () => {
                 })
                 result = await result.json()
                 if (result.msg === 'Successful') {
-                    setSuccess(true)
-                    setFail(false)
-                    setTokenFailed(false)
+                    toast.success("Entry Added Sucessfully")
                     setTimeout(() => {
                         reset()
                         navigate(0)
                     }, 2000)
                 }
                 else if (result.msg === "Token Expired") {
-                    setTokenFailed(true)
-                    setSuccess(false)
-                    setFail(false)
+                    toast.success("Authorization Failed, Login Again")
                     setTimeout(() => {
                         navigate('/adminlogin')
                         localStorage.removeItem('admin')
@@ -122,9 +122,7 @@ const MilkEntry = () => {
                 }
             }
             catch (err) {
-                setTokenFailed(false)
-                setSuccess(false)
-                setFail(true)
+                toast.error(err.message)
             }
         }
     }
@@ -164,8 +162,8 @@ const MilkEntry = () => {
     }
 
     async function getVenderDetail(id) {
-        if (id) {
-            try {
+        try {
+            if (id) {
                 const data = await fetch(`${Api_Url}/api/vender/id/${id}`, {
                     method: 'get',
                     headers: {
@@ -174,11 +172,12 @@ const MilkEntry = () => {
                 })
                 const jsonData = await data.json()
                 setVender(jsonData)
-            } catch (error) {
-                console.error(error)
             }
-        } else {
-            console.error("Id is null or undefined")
+            else {
+                throw new Error("Id Is Missing")
+            }
+        } catch (error) {
+            toast.error(error.message)
         }
     }
 
@@ -194,6 +193,7 @@ const MilkEntry = () => {
     }
 
     const handleVenderSelection = (event) => {
+        console.log(event.target.value)
         const selectedVenderName = event.target.value;
         const selectedVender = venderNames.find(vender => vender.Name === selectedVenderName);
         if (selectedVender) {
@@ -218,13 +218,15 @@ const MilkEntry = () => {
                 throw new Error(result.msg)
             }
         } catch (error) {
-            setDelError(error.message)
+            toast.error(error.message)
         }
     }
 
     useEffect(() => {
-        getVenderDetail(Vender_id)
-    }, [Vender_id])
+        if (Vender_id) {
+            getVenderDetail(Vender_id)
+        }
+    }, [Vender_id,])
 
     useEffect(() => {
         if (!Vender_id || !Fat || !Quantity) {
@@ -249,23 +251,19 @@ const MilkEntry = () => {
             <Header className="z-index-5 custom-header" />
             <div className='container-fluid bg-main text-light'>
                 <div className='flex-grow-1 overflow-auto pt-5 pt-sm-0'>
-                    <div className='container py-4'>
-                        <div className="row justify-content-center align-items-center g-1 sm:px-5">
-                            <div class="col-12 col-sm-6 ">
-                                <div className=' text-white text-center py-3 border-rside border-2  border-secondary'>
+                    <div className='container-fluid'>
+                        <div className="row justify-content-center g-1 sm:px-5">
+                            <div className="col-12 col-sm-6 col-md-4">
+                                <div className=' text-white text-center py-3 px-1 px-sm-3 px-md-4 border-rside  border-secondary'>
                                     <div id="milk-entry-heading">
                                         <h2>Fill Milk Entry Details : </h2>
                                     </div>
-                                    <div id="milk-entry-fetch">
-                                        {success && <p>Submit Successfully</p>}
-                                        {fail && <p>Submit Failed</p>}
-                                    </div>
                                     <div id="milk-entry-form">
-                                        <div class="form-floating mb-3">
+                                        <div className="form-floating mb-3">
                                             {searchError && <p className="fetch-error">Sorry, Unable To Fetch Vender Names  </p>}
                                             {tokenFailed && <p className="fetch-error">Token Failed, Login Again  </p>}
-                                            <input class="form-control" id="floatingInput" type='text' onInput={handleVenderSelection} list='vendername' />
-                                            <label for="floatingInput">Vendor Name</label>
+                                            <input className="form-control" id="floatingInput" type='text' onInput={handleVenderSelection} list='vendername' />
+                                            <label htmlFor="floatingInput">Vendor Name</label>
                                             {
                                                 venderNames.length > 0 &&
                                                 <datalist id="vendername">
@@ -276,35 +274,35 @@ const MilkEntry = () => {
                                                     }
                                                 </datalist>
                                             }
-                                            {error && !Vender_id && <p className='error'>Please Enter Name </p>}
+                                            {error && !Vender_id && <p className='text-danger text-start'>Please Enter Name </p>}
                                         </div>
-                                        <div class="form-floating mb-3">
-                                            <input type="date" class="form-control" id="floatingInput" value={DateDetail} onChange={(e) => setDateDetail(e.target.value)} />
-                                            <label for="floatingInput">Date</label>
-                                            {error && !DateDetail && <p className='error'>Please Enter Date</p>}
+                                        <div className="form-floating mb-3">
+                                            <input type="date" className="form-control" id="floatingInput" value={DateDetail} onChange={(e) => setDateDetail(e.target.value)} />
+                                            <label htmlFor="floatingInput">Date</label>
+                                            {error && !DateDetail && <p className='text-danger text-start'>Please Enter Date</p>}
                                         </div>
-                                        <div>
-                                            <select class="form-select mb-3" aria-label="Default select example" id="select" onChange={e => setShift(e.target.value)}>
-                                                <option selected value={''}>Shift</option>
-                                                <option value={'M'}>Morning</option>
-                                                <option value={'E'}>Evening</option>
+                                        <div className='mb-3'>
+                                            <select className="form-select" aria-label="Default select example" id="select" onChange={e => setShift(e.target.value)}>
+                                                <option defaultValue={''} value={''}>Shift</option>
+                                                <option alue={'M'}>Morning</option>
+                                                <option alue={'E'}>Evening</option>
                                             </select>
-                                            {error && !Shift && <p className='error'>Please Select Shift</p>}
+                                            {error && !Shift && <p className='text-danger text-start'>Please Select Shift</p>}
                                         </div>
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="floatingInput" value={Quantity} onChange={(e) => setQuantity(e.target.value)} type='number' placeholder="Quantity" />
-                                            <label for="floatingInput">Quantity</label>
-                                            {error && !Quantity && <p className='error'>Please Enter Quantity </p>}
+                                        <div className="form-floating mb-3">
+                                            <input className="form-control" id="floatingInput1" value={Quantity} onChange={(e) => setQuantity(e.target.value)} type='number' />
+                                            <label htmlFor="floatingInput1">Quantity</label>
+                                            {error && !Quantity && <p className='text-danger text-start'>Please Enter Quantity </p>}
                                         </div>
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="floatingInput" value={Fat} onChange={(e) => setFat(e.target.value)} type='number' placeholder="Fat" />
-                                            <label for="floatingInput">Fat</label>
-                                            {error && !Fat && <p className='error'>Please Enter Fat </p>}
+                                        <div className="form-floating mb-3">
+                                            <input className="form-control" id="floatingInput2" value={Fat} onChange={(e) => setFat(e.target.value)} type='number' />
+                                            <label htmlFor="floatingInput2">Fat</label>
+                                            {error && !Fat && <p className='text-danger text-start'>Please Enter Fat </p>}
                                         </div>
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="floatingInput" value={NetAmount} type='number' readOnly />
-                                            <label for="floatingInput">Net Amount</label>
-                                            {!NetAmount && <p className='text-warning mb-2 '>Wait While NetAmount Is Calculating </p>}
+                                        <div className="form-floating mb-3">
+                                            <input className="form-control" id="floatingInput3" value={NetAmount} type='number' readOnly />
+                                            <label htmlFor="floatingInput3">Net Amount</label>
+                                            {!NetAmount && <p className='text-warning mb-2 text-start'>Wait While NetAmount Is Calculating </p>}
                                         </div>
                                         <div className="d-flex justify-content-between align-items-center">
                                             <button onClick={submit} type="button" className="btn btn-primary btn-main">Submit</button>
@@ -313,53 +311,79 @@ const MilkEntry = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-12 col-sm-6 ">
-                            <div className=' text-white text-center py-3 border-rside border-2  border-secondary'>
-                                {
-                                    entries.length > 0 &&
-                                    <div id="milk-entry-tab-wrapper">
-                                        {delError && <p className='fetch-error'>{delError}</p>}
-                                        <h2 id="milk-entry-heading">Todays Entry</h2>
-                                        <table id="milk-entry-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>S.NO</th>
-                                                    <th>Name</th>
-                                                    <th>Shift</th>
-                                                    <th>Fat Pass</th>
-                                                    <th>Fat</th>
-                                                    <th>Rate</th>
-                                                    <th>Quantity</th>
-                                                    <th>NetAmount</th>
-                                                    <th>Delete</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    entries.map((entry, index) =>
-                                                        <tr key={entry._id}>
-                                                            <td>{index + 1}</td>
-                                                            <td>{entry.Vender.Name}</td>
-                                                            <td>{entry.Shift}</td>
-                                                            <td>{entry.Vender.FatPass}</td>
-                                                            <td>{entry.Fat}</td>
-                                                            <td>{entry.Rate}</td>
-                                                            <td>{entry.Quantity}</td>
-                                                            <td>{entry.NetAmount}</td>
-                                                            <td><button onClick={() => deleteEntry(entry._id)}>Delete</button></td>
-                                                        </tr>
-                                                    )
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                }
+                            <div className="col-12 col-sm-6 col-md-8 ">
+                                <div className=' text-white text-center py-3 border-secondary'>
+                                    {
+                                        entries.length > 0 &&
+                                        <div className="d-flex justify-content-center flex-column ">
+                                            <h2 className='text-center'>Today's Entry</h2>
+                                            <table className="d-none d-md-block px-lg-5 table table-striped table-hover table-dark">
+                                                <thead className="table-light">
+                                                    <tr>
+                                                        <th>S.NO</th>
+                                                        <th>Name</th>
+                                                        <th>Shift</th>
+                                                        <th>Fat Pass</th>
+                                                        <th>Fat</th>
+                                                        <th>Rate</th>
+                                                        <th>Quantity</th>
+                                                        <th>NetAmount</th>
+                                                        <th>Delete</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className='table-group-divider'>
+                                                    {
+                                                        entries.map((entry, index) =>
+                                                            <tr key={entry._id}>
+                                                                <td>{index + 1}</td>
+                                                                <td>{entry.Vender.Name}</td>
+                                                                <td>{entry.Shift}</td>
+                                                                <td>{entry.Vender.FatPass}</td>
+                                                                <td>{entry.Fat}</td>
+                                                                <td>{entry.Rate}</td>
+                                                                <td>{entry.Quantity}</td>
+                                                                <td>{entry.NetAmount}</td>
+                                                                <td><Button variant='danger' size='sm' onClick={() => deleteEntry(entry._id)}><RiDeleteBin6Fill /></Button></td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                </tbody>
+                                            </table>
+                                            <table className="d-md-none table table-striped table-hover table-dark">
+                                                <thead className="table-light">
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Fat</th>
+                                                        <th>Rate</th>
+                                                        <th>Qty</th>
+                                                        <th>N.A</th>
+                                                        <th>Delete</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className='table-group-divider'>
+                                                    {
+                                                        entries.map((entry, index) =>
+                                                            <tr key={entry._id}>
+                                                                <td>{entry.Vender.Name}</td>
+                                                                <td>{entry.Fat}</td>
+                                                                <td>{entry.Rate}</td>
+                                                                <td>{entry.Quantity}</td>
+                                                                <td>{entry.NetAmount}</td>
+                                                                <td><Button variant='danger' size='sm' onClick={() => deleteEntry(entry._id)}><MdDeleteForever /></Button></td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </Fragment>
     )
 }
