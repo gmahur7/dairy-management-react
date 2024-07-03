@@ -4,6 +4,7 @@ import Api_Url from '../env'
 import { AdminState } from '../Context/ContextApi'
 import Header from './Header'
 import { ToastContainer, toast } from 'react-toastify'
+import { Button, InputGroup } from 'react-bootstrap'
 
 const NewVender = () => {
     const { token } = AdminState()
@@ -59,7 +60,6 @@ const NewVender = () => {
 
     return (
         <Fragment>
-            <Header />
             <div className='container-fluid bg-main text-white'>
                 <div className='container'>
                     <div className='row justify-content-center'>
@@ -87,8 +87,8 @@ const NewVender = () => {
                                             <small className='text-danger'>{error.name}</small>
                                         </div>
                                         <div className='d-flex gap-4'>
-                                            <button type='submit' className='btn btn-primary'>Submit</button>
-                                            <button type='reset' className='btn btn-danger' onClick={reset}>Reset</button>
+                                            <Button type='submit' className='btn btn-primary btn-main'>Submit</Button>
+                                            <Button type='reset' className='btn btn-danger' onClick={reset}>Reset</Button>
                                         </div>
                                     </form>
                                 </div>

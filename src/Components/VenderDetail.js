@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { AdminState } from '../Context/ContextApi'
 import VenderLastDaysChart from './VenderLastDaysChart'
 import NavBar from './NavBar'
+import { GiVileFluid } from 'react-icons/gi'
 
 const VenderDetail = () => {
     const navigate = useNavigate()
@@ -90,14 +91,14 @@ const VenderDetail = () => {
             try {
                 let result = await fetch(`${Api_Url}/api/vender/venderdetail/notpayment/datetodateentries/`, {
                     method: 'post',
-                    body: JSON.stringify({ venderId: id, startDate,endDate }),
+                    body: JSON.stringify({ venderId: id, startDate, endDate }),
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`
                     }
                 })
                 result = await result.json()
-                
+
                 if (result.length > 0) {
                     setFetchError(false)
                     setMilkData(result)
@@ -121,10 +122,10 @@ const VenderDetail = () => {
     function printTable() {
         const printWindow = window.open('', '_blank');
         const printDoc = printWindow.document;
-    
+
         // Create a div to contain the content to print
         const printContent = printDoc.createElement('div');
-    
+
         // Create styles for printing
         const printStyle = printDoc.createElement('style');
         printStyle.innerHTML = `
@@ -140,7 +141,7 @@ const VenderDetail = () => {
             }
         `;
         printDoc.head.appendChild(printStyle);
-    
+
         // Create elements for vender name, total quantity, total amount, and date range
         const venderName = document.getElementById('vender-name').cloneNode(true);
         const totalQuantity = document.createElement('p');
@@ -152,13 +153,13 @@ const VenderDetail = () => {
             dateRange.textContent = `From: ${milkData[0].DateDetail} 
             To: ${milkData[milkData.length - 1].DateDetail}`;
         }
-    
+
         // Append elements to the print content
         printContent.appendChild(venderName);
         printContent.appendChild(totalQuantity);
         printContent.appendChild(totalAmount);
         printContent.appendChild(dateRange);
-    
+
         // Append the print content to the print document body and print
         printDoc.body.appendChild(printContent);
         printWindow.print();
@@ -178,7 +179,7 @@ const VenderDetail = () => {
     //                 width: 100%; /* Adjust the table width */
     //                 text-align: center;
     //             }
-      
+
     //             /* Add any other print-specific styles you need */
     //         }
     //     `;
@@ -192,19 +193,19 @@ const VenderDetail = () => {
     //     if (milkData.length > 0) {
     //         dateRange.textContent = `From: ${milkData[0].DateDetail} To: ${milkData[milkData.length - 1].DateDetail}`;
     //     }
-      
+
     //     // Append elements to the print content
     //     printContent.appendChild(venderName);
     //     printContent.appendChild(totalQuantity);
     //     printContent.appendChild(totalAmount);
     //     printContent.appendChild(dateRange);
-      
+
     //     // Append the print content to the print document body and print
     //     printDoc.body.appendChild(printContent);
     //     printWindow.print();
     //     printWindow.close();
     //   }
-    
+
 
     useEffect(() => {
         getData()
@@ -214,91 +215,94 @@ const VenderDetail = () => {
         getTotalAmount(milkData)
     }, [milkData])
     return (
-        <>
-        <NavBar/>
-        <div id="vender">
-            <div id="vender-payment-btns">
-                <h2 id="vender-name">Name : {data && data.Name}</h2>
-                <button onClick={printTable}>Print Table</button>
-                <div>
-                <button onClick={allPayments}>CheckPayments</button>
-                <button onClick={allEntries}>All Milk Entries</button>
+        <div className='container-fluid bg-main text-white'>
+            <div class="container pt-4 d-flex justify-content-center align-items-center">
+                <div className='col-md-6 col-sm-12 col-xs-12'>
+                    <div id="vender-payment-btns">
+                        <h2 id="vender-name">Name : {data && data.Name}</h2>
+                    </div>
+                    <div>
+                        <div>
+                            <button onClick={printTable}>Print Table</button>
+                            <button onClick={allPayments}>CheckPayments</button>
+                            <button onClick={allEntries}>All Milk Entries</button>
+                        </div>
+                    </div>
+                    <div id="vender-fetch-btns">
+                        <button onClick={() => getData()}>All</button>
+                        <button onClick={() => lastentries(7)}>Last 7 Days</button>
+                        <button onClick={() => lastentries(15)}>Last 15 Days</button>
+                        <button onClick={() => lastentries(30)}>Last 30 Days</button>
+                    </div>
+                    <div id="vender-date2date">
+                        <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                        <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                        <button onClick={dateToDate}>Get Entries</button>
+                        <p>
+                            {error && !startDate && <>Please Select Starting Date</>}
+                            {error && !endDate && <> Please Select Ending Date</>}
+                        </p>
+                    </div>
+                    {
+                        data &&
+                        <table id="vender-data-table">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Date</th>
+                                    <th>Shift</th>
+                                    <th>Fat</th>
+                                    <th>FatPass</th>
+                                    <th>Rate</th>
+                                    <th>Quantity</th>
+                                    <th>NetAmmount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {milkData && milkData.length > 0 &&
+                                    milkData.map((item, index) =>
+                                        <tr key={item._id}>
+                                            <td>{index + 1}</td>
+                                            <td>{item.DateDetail}</td>
+                                            <td>{item.Shift}</td>
+                                            <td>{item.Fat}</td>
+                                            <td>{item.FatPass}</td>
+                                            <td>{item.Rate}</td>
+                                            <td>{item.Quantity}</td>
+                                            <td>{item.NetAmount}</td>
+                                        </tr>
+                                    )
+                                }
+                                <tr>
+                                    <td colSpan={6}>Totals  = </td>
+                                    <td>{TotalQuantity}</td>
+                                    <td>{TotalAmount} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                    {
+                        fetchError && <p className='fetch-error'>{fetchError}</p>
+                    }
+                    <button id="vender-to-payment-btn" onClick={gotoPayment}>Go To Payment</button>
+                    <div id='vender-chart-options'>
+                        {data && <button onClick={() => displayChart ? setDisplayChart(false) : setDisplayChart(true)}>{displayChart ? 'Remove Chart' : 'Generate Chart'}</button>}
+                        {
+                            data &&
+                            <select id="vender-chart-select" onClick={e => setChartBase(e.target.value)}>
+                                <option value="">Select Chart Base</option>
+                                <option value="Quantity">Quantity</option>
+                                <option value="Amount">Amount</option>
+                                <option value="Fat">Fat</option>
+                            </select>
+                        }
+                    </div>
+                    {data && displayChart &&
+                        <VenderLastDaysChart data={milkData} type={chartBase} />
+                    }
                 </div>
             </div>
-            <div id="vender-fetch-btns">
-                <button onClick={() => getData()}>All</button>
-                <button onClick={() => lastentries(7)}>Last 7 Days</button>
-                <button onClick={() => lastentries(15)}>Last 15 Days</button>
-                <button onClick={() => lastentries(30)}>Last 30 Days</button>
-            </div>
-            <div id="vender-date2date">
-                <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
-                <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
-                <button onClick={dateToDate}>Get Entries</button>
-                <p>
-                    {error && !startDate && <>Please Select Starting Date</>}
-                    {error && !endDate && <> Please Select Ending Date</>}
-                </p>
-            </div>
-            {
-                data &&
-                <table id="vender-data-table">
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Date</th>
-                            <th>Shift</th>
-                            <th>Fat</th>
-                            <th>FatPass</th>
-                            <th>Rate</th>
-                            <th>Quantity</th>
-                            <th>NetAmmount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {milkData && milkData.length > 0 &&
-                            milkData.map((item, index) =>
-                                <tr key={item._id}>
-                                    <td>{index + 1}</td>
-                                    <td>{item.DateDetail}</td>
-                                    <td>{item.Shift}</td>
-                                    <td>{item.Fat}</td>
-                                    <td>{item.FatPass}</td>
-                                    <td>{item.Rate}</td>
-                                    <td>{item.Quantity}</td>
-                                    <td>{item.NetAmount}</td>
-                                </tr>
-                            )
-                        }
-                        <tr>
-                            <td colSpan={6}>Totals  = </td>
-                            <td>{TotalQuantity}</td>
-                            <td>{TotalAmount} </td>
-                        </tr>
-                    </tbody>
-                </table>
-            }
-            {
-                fetchError && <p className='fetch-error'>{fetchError}</p>
-            }
-            <button id="vender-to-payment-btn" onClick={gotoPayment}>Go To Payment</button>
-            <div id='vender-chart-options'>
-                {data && <button onClick={() => displayChart ? setDisplayChart(false) : setDisplayChart(true)}>{displayChart ? 'Remove Chart' : 'Generate Chart'}</button>}
-                {
-                    data &&
-                    <select id="vender-chart-select" onClick={e => setChartBase(e.target.value)}>
-                        <option value="">Select Chart Base</option>
-                        <option value="Quantity">Quantity</option>
-                        <option value="Amount">Amount</option>
-                        <option value="Fat">Fat</option>
-                    </select>
-                }
-            </div>
-            {data && displayChart &&
-                <VenderLastDaysChart data={milkData} type={chartBase} />
-            }
         </div>
-        </>
     )
 }
 

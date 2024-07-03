@@ -16,12 +16,15 @@ import LastDaysDetailChart from './Components/LastDaysDetailChart';
 import LastDaysPerVenderData from './Components/LastDaysPerVenderData';
 import VenderMain from './Components/VenderMain';
 import DetailsChart from './Components/DetailsChart';
+import Header from './Components/Header';
 
 function App() {
 
   document.title = "Dairy Management App"
 
   return (
+    <>  
+    <Header className="z-index-5 custom-header"/>
       <Routes>
         <Route path='/adminlogin' element={<AdminLogin />} />
         {/* <Route path='/forgetpassword' element={<ForgetPassword/>} /> */}
@@ -41,6 +44,7 @@ function App() {
         <Route path='/lastdayspervenderdata' element={<LastDaysPerVenderData />} />
         {/* </Route> */}
       </Routes>
+      </>
   );
 }
 

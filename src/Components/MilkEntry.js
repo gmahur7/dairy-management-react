@@ -248,7 +248,6 @@ const MilkEntry = () => {
 
     return (
         <Fragment>
-            <Header className="z-index-5 custom-header" />
             <div className='container-fluid bg-main text-light'>
                 <div className='flex-grow-1 overflow-auto pt-5 pt-sm-0'>
                     <div className='container-fluid'>

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import Api_Url from '../env'
 import { AdminState } from '../Context/ContextApi'
 import { useNavigate, useParams } from 'react-router-dom'
-import NavBar from './NavBar'
+import { Button, } from 'react-bootstrap'
+import { ToastContainer, toast } from 'react-toastify'
 
-const SetRateFat = () => {
+const SetRateFatPass = () => {
     const params = useParams();
     const { id } = params;
     const navigate = useNavigate()
@@ -15,8 +16,6 @@ const SetRateFat = () => {
     const [FatPass, setFatPass] = useState('')
     const [error, setError] = useState(false)
     const [fetchError, setFetchError] = useState(false)
-    const [success, setSuccess] = useState(false)
-    const [fail, setFail] = useState(false)
 
     function isEmpty(obj) {
         return Object.keys(obj).length === 0 && obj.constructor === Object;
@@ -56,9 +55,11 @@ const SetRateFat = () => {
         }
     }
 
-    const update = async () => {
+    const update = async (e) => {
+        e.preventDefault()
         if (!Name || !FatPass || !Rate) {
             setError(true)
+            toast.error("Please Fill All The Fields First")
         }
         else {
             try {
@@ -71,9 +72,9 @@ const SetRateFat = () => {
                     }
                 })
                 result = await result.json()
+                console.log(result)
                 if (result.msg === 'Successful') {
-                    setSuccess(true)
-                    setFail(false)
+                    toast.success("Vendor Updated Successfully")
                     setTimeout(() => {
                         reset()
                         navigate('/vendertable')
@@ -84,8 +85,7 @@ const SetRateFat = () => {
                 }
             }
             catch (err) {
-                setSuccess(false)
-                setFail(true)
+                toast.error(error.message)
             }
         }
     }
@@ -93,8 +93,7 @@ const SetRateFat = () => {
     function reset() {
         setName('')
         setFatPass('')
-        setSuccess(false)
-        setFail(false)
+        setRate('')
         setError(false)
     }
 
@@ -107,42 +106,48 @@ const SetRateFat = () => {
     }, [token, id, navigate])
 
     return (
-        <>
-            <NavBar />
-            <div id="set-rate-comp">
-                <div id="set-rate-heading">
-                    <h2>Update Vender Details</h2>
-                </div>
+        <div className='container-fluid bg-main text-white'>
+            <div className="container d-flex flex-column align-items-center">
                 {!isEmpty(data) &&
-                    <div id="set-rate-form">
-                        <div>
-                            <label>Vender Name : </label>
-                            <input type="text" value={Name} onChange={e => setName(e.target.value)} />
-                            {error && !Name && <p className='error'>Please Enter Name </p>}
+                    <div className='col-md-6 col-sm-12 col-xs-12'>
+                            <div className='card bg-dark mt-5 mt-sm-4 p-3'>
+                                <div className='card-header fs-3 bg-main text-info text-center'>Update Vendor Details</div>
+                                <div className='card-body'>
+                                    <form onSubmit={update}>
+                                        <div className='form-group mb-3'>
+                                            <label htmlFor='name' className='text-white'>Name</label>
+                                            <input type='text' className='form-control' id='name' placeholder='Enter Name
+                                            ' value={Name} onChange={e => setName(e.target.value)} />
+                                            {error&&!Name&&<small className='text-danger pt-1'>Please Fill Name Field</small>}
+                                        </div>
+                                        <div className='form-group mb-3'>
+                                            <label htmlFor='FatPass' className='text-white'>FatPass Pass</label>
+                                            <input type='number' className='form-control pt-1' id='FatPass' placeholder='Enter FatPass Pass
+                                            ' value={FatPass} onChange={e => setFatPass(e.target.value)} />
+                                            {error&&!FatPass&&<small className='text-danger'>Please Fill Fat Pass</small>}
+                                        </div>
+                                        <div className='form-group mb-4'>
+                                            <label htmlFor='name' className='text-white'>Rate</label>
+                                            <input type='number' className='form-control' id='rate' placeholder='Enter Rate
+                                            ' value={Rate} onChange={e => setRate(e.target.value)} />
+                                           {error&&!Rate&& <small className='text-danger pt-1'>Please fill Rate</small>}
+                                        </div>
+                                        <div className='d-flex gap-4'>
+                                            <Button type='submit' className='btn btn-primary btn-main'>Submit</Button>
+                                            <Button type='reset' className='btn btn-danger' onClick={reset}>Reset</Button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label>Vender Fat Pass : </label>
-                            <input type="number" value={FatPass} onChange={e => setFatPass(e.target.value)} />
-                            {error && !FatPass && <p className='error'>Please Enter Fat Pass </p>}
-                        </div>
-                        <div>
-                            <label>Vender Rate : </label>
-                            <input type="number" value={Rate} onChange={e => setRate(e.target.value)} />
-                            {error && !Rate && <p className='error'>Please Enter Rate </p>}
-                        </div>
-                        <div id="str-rate-form-btns">
-                            <button onClick={() => update()}>Update</button>
-                            <button onClick={reset}>Reset</button>
-                        </div>
-                    </div>}
+                    }
                 <div id="set-rate-fetch">
-                    {success && <p>Submit Successfully</p>}
-                    {fail && <p>Submit Failed</p>}
                     {fetchError && <p>Invalid Vendor ID</p>}
                 </div>
             </div>
-        </>
+            <ToastContainer/>
+        </div>
     )
 }
 
-export default SetRateFat
+export default SetRateFatPass
