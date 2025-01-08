@@ -2,9 +2,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Api_Url from '../env'
 import { AdminState } from '../Context/ContextApi'
-import Header from './Header'
 import { ToastContainer, toast } from 'react-toastify';
-import { Button } from 'react-bootstrap'
 import { MdDeleteForever } from 'react-icons/md'
 import { RiDeleteBin6Fill } from 'react-icons/ri'
 
@@ -342,7 +340,7 @@ const MilkEntry = () => {
                                                                 <td>{entry.Rate}</td>
                                                                 <td>{entry.Quantity}</td>
                                                                 <td>{entry.NetAmount}</td>
-                                                                <td><Button variant='danger' size='sm' onClick={() => deleteEntry(entry._id)}><RiDeleteBin6Fill /></Button></td>
+                                                                <td><button variant='danger' size='sm' onClick={() => deleteEntry(entry._id)}><RiDeleteBin6Fill /></button></td>
                                                             </tr>
                                                         )
                                                     }
@@ -368,7 +366,7 @@ const MilkEntry = () => {
                                                                 <td>{entry.Rate}</td>
                                                                 <td>{entry.Quantity}</td>
                                                                 <td>{entry.NetAmount}</td>
-                                                                <td><Button variant='danger' size='sm' onClick={() => deleteEntry(entry._id)}><MdDeleteForever /></Button></td>
+                                                                <td><button variant='danger' size='sm' onClick={() => deleteEntry(entry._id)}><MdDeleteForever /></button></td>
                                                             </tr>
                                                         )
                                                     }

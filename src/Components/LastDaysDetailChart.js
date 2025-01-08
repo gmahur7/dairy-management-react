@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { AdminState } from '../Context/ContextApi';
-import NavBar from './NavBar'
 import Api_Url from '../env';
-import { Bar, Line, Pie } from 'react-chartjs-2';
-import BarChartComponent from './VenderLastDaysChart';
-import { Colors } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 
 const LastDaysDetailChart = () => {
     const { token } = AdminState();
@@ -15,6 +12,8 @@ const LastDaysDetailChart = () => {
     const [startDate, setStartDate] = useState('')
     const [endDate, setEndDate] = useState('')
     const [error, setError] = useState(false)
+    const [page,setPage]=useState(1);
+    const [filteredData,setFilteredData]=useState([]);
 
     const getData = async (days) => {
         try {
@@ -27,6 +26,7 @@ const LastDaysDetailChart = () => {
                 },
             });
             result = await result.json();
+            console.log(result)
             if (result) {
                 setData(result);
             } else {
@@ -72,7 +72,7 @@ const LastDaysDetailChart = () => {
                 const { Date, TotalQuantity, Shift } = dayData;
 
                 if (!dateQuantities[Date]) {
-                    dateQuantities[Date] = { M: 0, E: 0 };
+                    dateQuantities[Date] = { Morning: 0, Evening: 0 };
                 }
 
                 dateQuantities[Date][Shift] += TotalQuantity;
@@ -83,9 +83,9 @@ const LastDaysDetailChart = () => {
 
         return Object.entries(dateQuantities).map(([date, quantities]) => ({
             date,
-            totalQuantity: quantities.M + quantities.E,
-            morningQuantity: quantities.M,
-            eveningQuantity: quantities.E,
+            totalQuantity: quantities.Morning + quantities.Evening,
+            morningQuantity: quantities.Morning,
+            eveningQuantity: quantities.Evening,
         }));
     };
 
@@ -122,42 +122,75 @@ const LastDaysDetailChart = () => {
         ],
     };
 
+    const next = () => {
+        if (page < Math.ceil(chartData.labels.length / 5)) {
+            setPage(page + 1);
+        }
+    };
+    
+    const prev = () => {
+        if (page > 1) {
+            setPage(page - 1);
+        }
+    };    
+
+    const setDataToChart = () => {
+        const startIndex = (page - 1) * 5;
+        const endIndex = page * 5;
+        setFilteredData(chartData.labels.slice(startIndex, endIndex));
+    };
+
     useEffect(() => {
         getData(days)
     }, [token, days]);
 
+    useEffect(()=>{
+        setDataToChart()
+    },[page])
+
+    // console.log(chartData)
+
     return (
-        <>
-            <NavBar />
-            <div id="last-days-detail">
-                <div id="last-days-detail-heading">
-                    <h2>Last {days} Days Detail Chart :</h2>
+        <div className='container-fluid bg-main text-white py-5'>
+            <div className='container bg-sec rounded p-4'>
+                <div className='text-center text-main mb-4'>
+                    <h2>Last {days} Days Detail Chart</h2>
                 </div>
-                <div id="last-days-detail-fetch">
+                <div className='d-flex gap-3 my-3'>
                     <button onClick={() => setDays(7)}>Last 7 days</button>
                     <button onClick={() => setDays(15)}>Last 15 days</button>
                     <button onClick={() => setDays(30)}>Last 30 days</button>
                 </div>
-                <div id="last-days-date-fetch">
-                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
-                    <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
-                    <button onClick={dateToDate}>Get Entries</button>
+                <div className='d-flex flex-column flex-sm-row align-items-center gap-3 '>
+                    <lable
+                        controlId="floatingInput"
+                        label="Start Date"
+                    >
+                        <input placeholder="name@example.com" type="date" value={startDate} onChange={e => setStartDate(e.target.value)}  />
+                    </lable>
+                    <lable
+                        controlId="floatingInput"
+                        label="End Date"
+                       
+                    >
+                        <input placeholder="name@example.com" type="date" value={endDate} onChange={e => setEndDate(e.target.value)}  />
+                    </lable>
+                    <button variant='secondary' className='py-3' onClick={dateToDate}>Get Entries</button>
                 </div>
-                    {fetchError&&<p>Server Error, Try After Some Time</p>}
-                <div>
-                    <p className='last-days-detail-fetch-error'>
+                {fetchError && <p className='text-danger fs-5 my-1 text-center'>Server Error, Try After Some Time</p>}
+                <div className='d-flex flex-column flex-sm-row gap-0 gap-sm-3 text-danger'>
+                    <p className='text-center'>
                         {error && !startDate && <>Please Select Starting Date</>}
                     </p>
-                    <p className='last-days-detail-fetch-error'>
+                    <p className='text-center'>
                         {error && !endDate && <>Please Select End Date</>}
                     </p>
                 </div>
                 <div id="last-days-detail-tab-div">
-                    <h2>Milk Data</h2>
-                    <table id="last-days-detail-table">
+                    <table striped bordered hover variant='dark'>
                         <thead>
                             <tr>
-                                <th>S.No</th>
+                                <th className="d-none d-sm-table-cell">S.No</th>
                                 <th>Date</th>
                                 <th>Total Amount</th>
                                 <th>Total Quantity</th>
@@ -167,7 +200,7 @@ const LastDaysDetailChart = () => {
                         <tbody>
                             {data.map((item, index) => (
                                 <tr key={item._id}>
-                                    <td>{index + 1}</td>
+                                    <td className="d-none d-sm-table-cell">{index + 1}</td>
                                     <td>{item.Date}</td>
                                     <td>{item.TotalAmount}</td>
                                     <td>{item.TotalQuantity}</td>
@@ -178,16 +211,20 @@ const LastDaysDetailChart = () => {
                     </table>
                 </div>
                 <div id="last-days-display-chart">
-                    {data.length > 0 && <button onClick={() => displayChart ? setDisplayChart(false) : setDisplayChart(true)}>{displayChart ? 'Remove Chart' : 'Generate Chart'}</button>}
+                    {data.length > 0 && <button variant='success' onClick={() => displayChart ? setDisplayChart(false) : setDisplayChart(true)}>{displayChart ? 'Remove Chart' : 'Generate Chart'}</button>}
                 </div>
                 {data.length > 0 &&
                     displayChart &&
                     <div id="last-days-Bar-chart">
-                        <Bar data={chartData} />
+                        <Bar data={{ ...chartData, labels: filteredData }}  />
+                        <div className='d-flex justify-content-center gap-5 mt-3'>
+                            <button variant='primary' onClick={prev} disabled={page>1?false:true}>Prev</button>
+                            <button variant='primary' onClick={next} disabled={page<=Number.parseInt(data.length/5)?false:true}>Next</button>
+                        </div>
                     </div>
                 }
             </div >
-        </>
+        </div>
     )
 }
 

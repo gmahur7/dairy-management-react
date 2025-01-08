@@ -3,8 +3,6 @@ import Api_Url from '../env'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AdminState } from '../Context/ContextApi'
 import VenderLastDaysChart from './VenderLastDaysChart'
-import NavBar from './NavBar'
-import { GiVileFluid } from 'react-icons/gi'
 
 const VenderDetail = () => {
     const navigate = useNavigate()
@@ -21,6 +19,12 @@ const VenderDetail = () => {
     const [TotalAmount, setTotalAmount] = useState(0)
     const [TotalQuantity, setTotalQuantity] = useState(0)
     const [fetchError, setFetchError] = useState(false)
+    const [colSpan, setColSpan] = useState(() => {
+        if (window.innerWidth > 576) {
+            return 6;
+        }
+        return 4;
+    })
 
     const getData = async () => {
         try {
@@ -206,6 +210,19 @@ const VenderDetail = () => {
     //     printWindow.close();
     //   }
 
+    useEffect(() => {
+        const handleColspan = () => {
+            if (window.innerWidth > 576) {
+                setColSpan(6)
+                return;
+            }
+            setColSpan(4)
+        };
+        window.addEventListener('resize', handleColspan);
+        return () => {
+            window.removeEventListener('resize', handleColspan);
+        };
+    }, []);
 
     useEffect(() => {
         getData()
@@ -214,94 +231,96 @@ const VenderDetail = () => {
     useEffect(() => {
         getTotalAmount(milkData)
     }, [milkData])
+    
     return (
-        <div className='container-fluid bg-main text-white'>
-            <div class="container pt-4 d-flex justify-content-center align-items-center">
-                <div className='col-md-6 col-sm-12 col-xs-12'>
-                    <div id="vender-payment-btns">
-                        <h2 id="vender-name">Name : {data && data.Name}</h2>
+        <div className='container-fluid bg-main text-white min-h-auto pb-10'>
+            <div className='container d-flex flex-column flex-sm-row align-items-center justify-content-between pb-1 pb-sm-4 pt-2 gap-3'>
+                <div className='bg-secondary px-4 rounded-2 py-1'>
+                    <h2 className='text-warning fs-3'>{data && data.Name}</h2>
+                </div>
+                <div className='d-flex flex-row gap-sm-2 justify-content-between gap-2 gap-sm-5 px-1'>
+                    <button variant='primary' onClick={printTable}>Print</button>
+                    <button variant='primary' onClick={allPayments}>Check Payments</button>
+                    <button variant='primary' onClick={allEntries}>All Entries</button>
+                </div>
+            </div>
+            <div className="container pt-4 d-flex justify-content-center flex-column align-items-center">
+                <div className=' bg-sec container d-flex justify-content-between flex-column align-items-center py-4 rounded-3'>
+                    <div className='mb-3 d-flex gap-1 gap-md-5'>
+                        <button variant='primary' onClick={() => getData()}>All Entries</button>
+                        <button variant='primary' onClick={() => lastentries(7)}>7 Days Entries</button>
+                        <button variant='primary' onClick={() => lastentries(15)}>15 Days Entries</button>
+                        <button variant='primary' onClick={() => lastentries(30)}>30 Days Entries</button>
                     </div>
-                    <div>
-                        <div>
-                            <button onClick={printTable}>Print Table</button>
-                            <button onClick={allPayments}>CheckPayments</button>
-                            <button onClick={allEntries}>All Milk Entries</button>
-                        </div>
+                    <div className="input-group flex-nowrap d-flex gap-0 gap-sm-4 px-0 px-sm-5">
+                        <input type="date" className="form-control rounded-5 " placeholder="start-date" aria-label="Username" aria-describedby="addon-wrapping" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                        <input type="date" className="form-control rounded-5 " placeholder="end-date" aria-label="Username" aria-describedby="addon-wrapping" value={endDate} onChange={e => setEndDate(e.target.value)} />
+
+                        <button variant='primary' className='rounded-1' onClick={dateToDate}>Get Entries</button>
                     </div>
-                    <div id="vender-fetch-btns">
-                        <button onClick={() => getData()}>All</button>
-                        <button onClick={() => lastentries(7)}>Last 7 Days</button>
-                        <button onClick={() => lastentries(15)}>Last 15 Days</button>
-                        <button onClick={() => lastentries(30)}>Last 30 Days</button>
-                    </div>
-                    <div id="vender-date2date">
-                        <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
-                        <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
-                        <button onClick={dateToDate}>Get Entries</button>
-                        <p>
-                            {error && !startDate && <>Please Select Starting Date</>}
-                            {error && !endDate && <> Please Select Ending Date</>}
-                        </p>
-                    </div>
-                    {
-                        data &&
-                        <table id="vender-data-table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
-                                    <th>Date</th>
-                                    <th>Shift</th>
-                                    <th>Fat</th>
-                                    <th>FatPass</th>
-                                    <th>Rate</th>
-                                    <th>Quantity</th>
-                                    <th>NetAmmount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {milkData && milkData.length > 0 &&
-                                    milkData.map((item, index) =>
-                                        <tr key={item._id}>
-                                            <td>{index + 1}</td>
-                                            <td>{item.DateDetail}</td>
-                                            <td>{item.Shift}</td>
-                                            <td>{item.Fat}</td>
-                                            <td>{item.FatPass}</td>
-                                            <td>{item.Rate}</td>
-                                            <td>{item.Quantity}</td>
-                                            <td>{item.NetAmount}</td>
-                                        </tr>
-                                    )
-                                }
-                                <tr>
-                                    <td colSpan={6}>Totals  = </td>
-                                    <td>{TotalQuantity}</td>
-                                    <td>{TotalAmount} </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    }
-                    {
-                        fetchError && <p className='fetch-error'>{fetchError}</p>
-                    }
-                    <button id="vender-to-payment-btn" onClick={gotoPayment}>Go To Payment</button>
-                    <div id='vender-chart-options'>
-                        {data && <button onClick={() => displayChart ? setDisplayChart(false) : setDisplayChart(true)}>{displayChart ? 'Remove Chart' : 'Generate Chart'}</button>}
+                </div>
+                {
+                    data &&
+                    // <div className='bg-custom mt-5 p-5 rounded-2'>
+                    <table striped hover className='rounded-5 mt-2' variant='dark'>
+                        <thead>
+                            <tr>
+                                <th className="d-none d-sm-table-cell">S.No</th>
+                                <th>Date</th>
+                                <th>Shift</th>
+                                <th className="d-none d-sm-table-cell">FatPass</th>
+                                <th>Fat</th>
+                                <th>Rate</th>
+                                <th>Qty</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {milkData && milkData.length > 0 &&
+                                milkData.map((item, index) =>
+                                    <tr key={item._id}>
+                                        <td className="d-none d-sm-table-cell">{index + 1}</td>
+                                        <td>{item.DateDetail}</td>
+                                        <td>{item.Shift}</td>
+                                        <td className="d-none d-sm-table-cell">{item.FatPass}</td>
+                                        <td>{item.Fat}</td>
+                                        <td>{item.Rate}</td>
+                                        <td>{item.Quantity}</td>
+                                        <td>{item.NetAmount}</td>
+                                    </tr>
+                                )
+                            }
+                            <tr>
+                                <td colSpan={colSpan}>Totals  = </td>
+                                <td>{TotalQuantity}</td>
+                                <td>{TotalAmount} </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    // </div>
+                }
+                <div className='container d-flex flex-column flex-sm-row justify-content-between my-2 gap-4 gap-sm-0'>
+                    <button className='btn-main' onClick={gotoPayment}>Go To Payment</button>
+                    <div className='d-flex gap-2'>
                         {
                             data &&
-                            <select id="vender-chart-select" onClick={e => setChartBase(e.target.value)}>
+                            <select size="sm" aria-label="Default select example" onClick={e => setChartBase(e.target.value)}>
                                 <option value="">Select Chart Base</option>
                                 <option value="Quantity">Quantity</option>
                                 <option value="Amount">Amount</option>
                                 <option value="Fat">Fat</option>
                             </select>
                         }
+                        {data && <button variant='info' onClick={() => displayChart ? setDisplayChart(false) : setDisplayChart(true)}>{displayChart ? 'Remove Chart' : 'Generate Chart'}</button>}
                     </div>
-                    {data && displayChart &&
-                        <VenderLastDaysChart data={milkData} type={chartBase} />
-                    }
                 </div>
+
             </div>
+            {data && displayChart &&
+                <div className='container-fluid'>
+                    <VenderLastDaysChart data={milkData} type={chartBase} />
+                </div>
+            }
         </div>
     )
 }

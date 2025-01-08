@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Api_Url from '../env'
 import { AdminState } from '../Context/ContextApi'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, } from 'react-bootstrap'
 import { ToastContainer, toast } from 'react-toastify'
 
 const SetRateFatPass = () => {
@@ -133,8 +132,8 @@ const SetRateFatPass = () => {
                                            {error&&!Rate&& <small className='text-danger pt-1'>Please fill Rate</small>}
                                         </div>
                                         <div className='d-flex gap-4'>
-                                            <Button type='submit' className='btn btn-primary btn-main'>Submit</Button>
-                                            <Button type='reset' className='btn btn-danger' onClick={reset}>Reset</Button>
+                                            <button type='submit' className='btn btn-primary btn-main'>Submit</button>
+                                            <button type='reset' className='btn btn-danger' onClick={reset}>Reset</button>
                                         </div>
                                     </form>
                                 </div>

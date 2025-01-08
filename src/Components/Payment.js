@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { AdminState } from '../Context/ContextApi'
 import { useNavigate, useParams } from 'react-router-dom'
 import Api_Url from '../env'
-import NavBar from './NavBar'
 
 const Payment = () => {
     const navigate = useNavigate()
@@ -82,27 +81,40 @@ const Payment = () => {
         }
         fetchEntries()
     }, [token])
+
     return (
-        <>
-            <NavBar />
-            <div id="payment-tab">
-                <div>
-                    <h1>Payment : {Details.length > 0 && Details[0].Vender.Name}</h1>
+        <div className='container-fluid bg-main text-white py-3'>
+            <div className='container mt-5 p-5 bg-sec rounded'>
+                <div className='text-center pb-3'>
+                    <h1>Payment : <span className='text-main'> {Details.length > 0 && Details[0].Vender.Name}</span></h1>
                 </div>
                 {
                     !fetchError &&
-                    <div id="payment-tab-details">
+                    <div className=''>
                         <div>
-                            Total Amount : {TotalAmount}
-                            {error && !TotalAmount && <p>Total Amount is Not Avilable.</p>}
+                            <div className="mb-1">
+                                <label id="inputGroup-sizing-default">
+                                Total Amount 
+                                </label>
+                                <input
+                                    aria-label="Default"
+                                    aria-describedby="inputGroup-sizing-default"
+                                    type="number"
+                                    value={TotalAmount}
+                                />
+                            </div>
+                            {error && !TotalAmount && <p className='text-danger'>Total Amount is Not Avilable.</p>}
                         </div>
                         <div>
-                            <span>Paid Amount : </span>
-                            <input type="number" onChange={(e) => setPaidAmount(e.target.value)} />
-                            {error && !PaidAmount && <p>Please Enter Paid Amount.</p>}
+                            <div className="mb-1 mt-3">
+                                <label>₹</label>
+                                <input type='number' aria-label="Amount (to the nearest dollar)" onChange={(e) => setPaidAmount(e.target.value)} />
+                                <label>.0</label>
+                            </div>
+                            {error && !PaidAmount && <p className='text-danger'>Please Enter Paid Amount.</p>}
                         </div>
-                        <div>
-                            <button onClick={payment}>Payment</button>
+                        <div className='mt-3'>
+                            <button variant='success' className='px-4' onClick={payment}>Payment</button>
                         </div>
                     </div>
                 }
@@ -118,7 +130,7 @@ const Payment = () => {
                     }
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

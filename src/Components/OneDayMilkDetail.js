@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import { AdminState } from '../Context/ContextApi';
 import Api_Url from '../env';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
-import NavBar from './NavBar';
+import { toast, ToastContainer } from 'react-toastify';
 
 const OneDayMilkDetail = () => {
   const { token } = AdminState();
   const [data, setData] = useState('');
   const [date, setDate] = useState('');
   const [displayChart, setDisplayChart] = useState(false)
-  const [fetchError, setFetchError] = useState();
 
   const getData = async (date) => {
     if (date) {
@@ -24,21 +23,20 @@ const OneDayMilkDetail = () => {
           },
         });
         result = await result.json();
-      
+        console.log(result)
         if (!result.msg) {
           setData(result);
-          setFetchError(false)
         } else {
           setData({});
           throw new Error(result.msg);
         }
       } catch (error) {
-        setFetchError(error.message);
+        toast.error("Failed to fetch data.")
       }
     }
   };
 
-  useEffect(() => { }, [token]);
+  // useEffect(() => { }, [token]);
 
   const getVendorQuantities = () => {
     const vendorQuantities = {};
@@ -97,32 +95,50 @@ const OneDayMilkDetail = () => {
 
   return (
     <>
-    <NavBar/>
-    <div id="one-day-comp">
-      <div id="one-day-heading"><h2>One Day Detail:</h2></div>
-      <div id="one-day-btns">
-        <span>Select Date : </span>
-        <input type='date' onChange={e => setDate(e.target.value)} />
-        <button onClick={() => getData(date)}>Get Data</button>
-      </div>
-      <div id="one-day-detail">
-        <div>Date: {data.Date}</div>
-        {data.Shift && <div>Shift: {data.Shift}</div>}
-        <div>TotalQuantity: {data.TotalQuantity}</div>
-        <div>TotalAmount: {data.TotalAmount}</div>
-      </div>
-      <div id="one-day-chart">
-        {data && <button onClick={() => displayChart ? setDisplayChart(false) : setDisplayChart(true)}>{displayChart ? 'Remove Chart' : 'Generate Chart'}</button>}
-      </div>
-      {fetchError && <p>Error: Data Not Found</p>}
-      {data && displayChart &&
-        <div id="one-day-bar-chart">
-          <div className="chart">
-          <Bar data={chartData} />
+    <div className='container-fluid bg-main text-white'>
+      <div className='container mx-auto'>
+        <div id="one-day-comp">
+          <div className='card bg-dark mt-4 p-3'>
+            <div className='card-header fs-3 bg-main text-info '>One Day Detail</div>
+            <div className='card-body'>
+              <form>
+                <div className='form-group mb-3'>
+                  <label htmlFor='name' className='text-white'>Date</label>
+                  <input type='date' className='form-control' id='name' placeholder='Enter Date' value={date} onChange={e => setDate(e.target.value)} />
+                  {/* <small className='text-danger'>{error.name}</small> */}
+                </div>
+                { data.TotalAmount && data.TotalQuantity&&
+                  <div>
+                    <div className='form-group mb-3'>
+                      <label htmlFor='fat' className='text-white'>Total Quantity</label>
+                      <input type='number' className='form-control' id='fat' placeholder='Total Quantity' value={data.TotalQuantity} />
+                      {/* <small className='text-danger'>{error.name}</small> */}
+                    </div>
+                    <div className='form-group mb-4'>
+                      <label htmlFor='amt' className='text-white'>Total Amount</label>
+                      <input type='number' className='form-control' id='amt' placeholder='Total Amount' value={data.TotalAmount} />
+                      {/* <small className='text-danger'>{error.name}</small> */}
+                    </div>
+                  </div>
+                }
+                <div className='d-flex gap-4'>
+                  <button className='btn btn-primary btn-main' onClick={()=>getData(date)}>Get Data</button>
+                  {data && <button onClick={() => displayChart ? setDisplayChart(false) : setDisplayChart(true)}>{displayChart ? 'Remove Chart' : 'Generate Chart'}</button>}
+                </div>
+              </form>
+            </div>
+          </div>
+          {data && displayChart &&
+            <div id="one-day-bar-chart">
+              <div className="chart">
+                <Bar data={chartData} />
+              </div>
+            </div>
+          }
         </div>
-        </div>
-      }
+      </div>
     </div>
+      <ToastContainer/>
     </>
   );
 };

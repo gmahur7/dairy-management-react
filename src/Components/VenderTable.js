@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Api_Url from '../env'
 import { AdminState } from '../Context/ContextApi'
 import { Link } from 'react-router-dom'
-import NavBar from './NavBar'
-import { Button, Table } from 'react-bootstrap'
 import { GrUpdate } from 'react-icons/gr'
 
 const VenderTable = () => {
@@ -32,12 +30,12 @@ const VenderTable = () => {
                     <h2 className='text-info'>All Vendors</h2>
                 </div>
                 <div>
-                    <Button variant='secondary'><Link className='text-white text-decoration-none' to='/lastdayspervenderdata'>Last Days Per Vender Data</Link></Button>
+                    <button variant='secondary'><Link className='text-white text-decoration-none' to='/lastdayspervenderdata'>Last Days Per Vender Data</Link></button>
                 </div>
                 <div className='col-12 col-sm-6 mt-4 rounded-3'>
                     {
                         data.length > 0 &&
-                        <Table variant='dark' striped bordered hover size="lg" style={{ padding: "10px", textAlign: "center" }}>
+                        <table variant='dark' striped bordered hover size="lg" style={{ padding: "10px", textAlign: "center" }}>
                             <thead  >
                                 <tr>
                                     <th>S.No</th>
@@ -60,7 +58,7 @@ const VenderTable = () => {
                                     )
                                 }
                             </tbody>
-                        </Table>
+                        </table>
                     }
                 </div>
             </div>

@@ -2,9 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Api_Url from '../env'
 import { AdminState } from '../Context/ContextApi'
-import Header from './Header'
 import { ToastContainer, toast } from 'react-toastify'
-import { Button, InputGroup } from 'react-bootstrap'
 
 const NewVender = () => {
     const { token } = AdminState()
@@ -87,8 +85,8 @@ const NewVender = () => {
                                             <small className='text-danger'>{error.name}</small>
                                         </div>
                                         <div className='d-flex gap-4'>
-                                            <Button type='submit' className='btn btn-primary btn-main'>Submit</Button>
-                                            <Button type='reset' className='btn btn-danger' onClick={reset}>Reset</Button>
+                                            <button type='submit' className='btn btn-primary btn-main'>Submit</button>
+                                            <button type='reset' className='btn btn-danger' onClick={reset}>Reset</button>
                                         </div>
                                     </form>
                                 </div>
